@@ -1,0 +1,19 @@
+BIBTEX:
+@INPROCEEDINGS{1024129,
+author={Imiya, A. and Kawamoto, K.},
+booktitle={3D Data Processing Visualization and Transmission, 2002. Proceedings. First International Symposium on}, title={Mathematical aspects of shape reconstruction from an image sequence},
+year={2002},
+month={},
+volume={},
+number={},
+pages={ 632 - 635},
+abstract={ It is possible to decompose a three-dimensional objects into a collection of shadows. The geometric relation permits one to decompose shadows of a three-dimensional object to shadows of planar objects. Using this geometric relations, we prove that a class of non-convex objects is reconstructible from a series of shadows.},
+keywords={ 3D object decomposition; image reconstruction; image sequence; nonconvex polyhedrons; shape from shadows; shape reconstruction; slice convex objects; voting method; computational geometry; image reconstruction; image sequences; stereo image processing;},
+doi={10.1109/TDPVT.2002.1024129},
+ISSN={},}
+
+PLAIN:
+Imiya, A.; Kawamoto, K.; , "Mathematical aspects of shape reconstruction from an image sequence," 3D Data Processing Visualization and Transmission, 2002. Proceedings. First International Symposium on , vol., no., pp. 632- 635, 2002
+doi: 10.1109/TDPVT.2002.1024129
+Abstract: It is possible to decompose a three-dimensional objects into a collection of shadows. The geometric relation permits one to decompose shadows of a three-dimensional object to shadows of planar objects. Using this geometric relations, we prove that a class of non-convex objects is reconstructible from a series of shadows.
+URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1024129&isnumber=22019

@@ -1,0 +1,18 @@
+BIBTEX:
+@INPROCEEDINGS{698646,
+author={Daum, M. and Dudek, G.},
+booktitle={Computer Vision and Pattern Recognition, 1998. Proceedings. 1998 IEEE Computer Society Conference on}, title={On 3-D surface reconstruction using shape from shadows},
+year={1998},
+month={23-25},
+volume={},
+number={},
+pages={461 -468},
+abstract={In this paper we discuss new results on the Shape From Darkness problem: using the motion of cast shadows to recover scene structure. Our approach is based on collecting a set of images from a fixed viewpoint as a known light source mover; ldquo;across the sky rdquo;. Previously published solutions to this problem have performed the reconstruction only for cross sections of the scene. In this paper, we present a reconstruction algorithm and discuss the reconstruction of an entire 3-D scene under various light source trajectories. We also consider the constraints on reconstruction. We conclude with experimental results that illustrate the convergence properties of the solution process and its robustness properties},
+keywords={3D surface reconstruction;Shape From Darkness problem;cast shadows;convergence properties;light source mover;light source trajectories;reconstruction algorithm;robustness properties;scene structure;computer vision;image reconstruction;},
+doi={10.1109/CVPR.1998.698646},
+ISSN={1063-6919},}
+
+PLAIN:
+Daum, M.; Dudek, G.; , "On 3-D surface reconstruction using shape from shadows," Computer Vision and Pattern Recognition, 1998. Proceedings. 1998 IEEE Computer Society Conference on , vol., no., pp.461-468, 23-25 Jun 1998
+doi: 10.1109/CVPR.1998.698646
+URL: http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=698646&isnumber=15135
