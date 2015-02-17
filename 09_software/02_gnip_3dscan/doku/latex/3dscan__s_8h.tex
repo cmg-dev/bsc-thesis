@@ -1,0 +1,206 @@
+\hypertarget{3dscan__s_8h}{
+\section{server/3dscan\_\-s.h File Reference}
+\label{3dscan__s_8h}\index{server/3dscan\_\-s.h@{server/3dscan\_\-s.h}}
+}
+
+
+Server for MQ II serving for 3D-\/ Scan Thesis.  
+
+
+\subsection*{Defines}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{3dscan__s_8h_a3148d7709dc6606cdc38956bd2635940}{
+\#define {\bfseries LIVE}~1}
+\label{3dscan__s_8h_a3148d7709dc6606cdc38956bd2635940}
+
+\item 
+\hypertarget{3dscan__s_8h_a5a4a6f8d943a5c0cc728d4d46b709da1}{
+\#define {\bfseries TAKE\_\-PICTURE}~2}
+\label{3dscan__s_8h_a5a4a6f8d943a5c0cc728d4d46b709da1}
+
+\item 
+\hypertarget{3dscan__s_8h_aca142a9ef7aadbb19914c334aefd1812}{
+\#define {\bfseries RECORD\_\-SEQUENCE}~3}
+\label{3dscan__s_8h_aca142a9ef7aadbb19914c334aefd1812}
+
+\item 
+\hypertarget{3dscan__s_8h_a5da15453f6a739089ce4bf42e49869a3}{
+\#define {\bfseries CALIBRATION\_\-RUN}~4}
+\label{3dscan__s_8h_a5da15453f6a739089ce4bf42e49869a3}
+
+\item 
+\hypertarget{3dscan__s_8h_a515025fd09a5d94aa3123aaef1f4fd2c}{
+\#define {\bfseries VGA\_\-IMG\_\-HEIGHT}~480}
+\label{3dscan__s_8h_a515025fd09a5d94aa3123aaef1f4fd2c}
+
+\item 
+\hypertarget{3dscan__s_8h_aaea275612d35e49c86721b7e75377ed9}{
+\#define {\bfseries VGA\_\-IMG\_\-WIDTH}~640}
+\label{3dscan__s_8h_aaea275612d35e49c86721b7e75377ed9}
+
+\item 
+\hypertarget{3dscan__s_8h_a7bf32bc2fdfd0842b3f86ba01ca73b11}{
+\#define {\bfseries MAX\_\-IMG\_\-HEIGHT}~480}
+\label{3dscan__s_8h_a7bf32bc2fdfd0842b3f86ba01ca73b11}
+
+\item 
+\hypertarget{3dscan__s_8h_acfc428466008b6f5b27fe20688b3de93}{
+\#define {\bfseries MAX\_\-IMG\_\-WIDTH}~752}
+\label{3dscan__s_8h_acfc428466008b6f5b27fe20688b3de93}
+
+\item 
+\#define \hyperlink{3dscan__s_8h_af155718b04f99f42c5d343e92888dbd8}{CAL\_\-START\_\-Y}~220
+\item 
+\#define \hyperlink{3dscan__s_8h_a090f0583fc787def1768ea0d173d9cdc}{CAL\_\-START\_\-X}~220
+\item 
+\#define \hyperlink{3dscan__s_8h_a2053dda04cd6577963a9d840d836190b}{CAL\_\-SEARCHLEN}~40
+\item 
+\#define {\bfseries DISPLAY\_\-USAGE\_\-AND\_\-EXIT}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{3dscan__s_8h_adf976c63dff735f5a8ab812cd6571249}{basic\_\-sensor\_\-setup} (int ui\_\-snr, int hei, int wid, int exp, int gain)
+\begin{DoxyCompactList}\small\item\em Does a basic setup for a sensor. \item\end{DoxyCompactList}\item 
+int \hyperlink{3dscan__s_8h_a7fb48445adaa2fa12bdc2820970c8703}{save\_\-imges\_\-2\_\-nfs} (char $\ast$path, int hei, int wid)
+\begin{DoxyCompactList}\small\item\em Aquires an image from every can; saves them to a given path. \item\end{DoxyCompactList}\item 
+\hypertarget{3dscan__s_8h_acd01f812f872402a12964a89f93ea154}{
+int {\bfseries determine\_\-calibration} (char $\ast$path, int hei, int wid, short lower\_\-tresh, short upper\_\-tresh)}
+\label{3dscan__s_8h_acd01f812f872402a12964a89f93ea154}
+
+\item 
+void \hyperlink{3dscan__s_8h_a56ef422b226d6682c73a30851e3b5cf1}{display\_\-vga} (void $\ast$\_\-name)
+\begin{DoxyCompactList}\small\item\em Displays a cameraimage on the screen. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{3dscan__s_8h_a58d2936f0c5d3781d36ddeae23ae2e42}{
+PB\_\-SENSOR\_\-CONTROL $\ast$ {\bfseries t\_\-pb\_\-sensor\_\-control}}
+\label{3dscan__s_8h_a58d2936f0c5d3781d36ddeae23ae2e42}
+
+\item 
+\hypertarget{3dscan__s_8h_a729c9b6af6a616adf77d60d685752ad9}{
+PB\_\-VGA\_\-FIFO $\ast$ {\bfseries t\_\-pb\_\-vga\_\-fifo} = NULL}
+\label{3dscan__s_8h_a729c9b6af6a616adf77d60d685752ad9}
+
+\item 
+\hypertarget{3dscan__s_8h_a47b8f810da4c9a736ac768e6065eed56}{
+PB\_\-DATAPLEXER $\ast$ {\bfseries t\_\-pb\_\-dataplexer} \mbox{[}4\mbox{]}}
+\label{3dscan__s_8h_a47b8f810da4c9a736ac768e6065eed56}
+
+\item 
+\hypertarget{3dscan__s_8h_a751eb6190f31d34c8af3c44a4af9c49f}{
+PB\_\-THRESHOLD $\ast$ {\bfseries t\_\-pb\_\-threshold} \mbox{[}4\mbox{]}}
+\label{3dscan__s_8h_a751eb6190f31d34c8af3c44a4af9c49f}
+
+\item 
+\hypertarget{3dscan__s_8h_a2053ed9eb6e64517546d9e9d280af2a3}{
+PB\_\-LEDA $\ast$ {\bfseries t\_\-pb\_\-leda} = NULL}
+\label{3dscan__s_8h_a2053ed9eb6e64517546d9e9d280af2a3}
+
+\item 
+\hypertarget{3dscan__s_8h_a16bce66774768801e2642a6292ff689e}{
+MQ2\_\-MODULE\_\-DESC $\ast$ {\bfseries t\_\-mq2\_\-module\_\-desc}}
+\label{3dscan__s_8h_a16bce66774768801e2642a6292ff689e}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Server for MQ II serving for 3D-\/ Scan Thesis. \begin{DoxyAuthor}{Author}
+Christoph Gnip 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+July 20th 2010 
+\end{DoxyDate}
+\begin{DoxyVersion}{Version}
+1.0 
+\end{DoxyVersion}
+
+
+\subsection{Define Documentation}
+\hypertarget{3dscan__s_8h_a2053dda04cd6577963a9d840d836190b}{
+\index{3dscan\_\-s.h@{3dscan\_\-s.h}!CAL\_\-SEARCHLEN@{CAL\_\-SEARCHLEN}}
+\index{CAL\_\-SEARCHLEN@{CAL\_\-SEARCHLEN}!3dscan_s.h@{3dscan\_\-s.h}}
+\subsubsection[{CAL\_\-SEARCHLEN}]{\setlength{\rightskip}{0pt plus 5cm}\#define CAL\_\-SEARCHLEN~40}}
+\label{3dscan__s_8h_a2053dda04cd6577963a9d840d836190b}
+Length to serch for a bright-\/dark change in the image \mbox{[}pxs\mbox{]} \hypertarget{3dscan__s_8h_a090f0583fc787def1768ea0d173d9cdc}{
+\index{3dscan\_\-s.h@{3dscan\_\-s.h}!CAL\_\-START\_\-X@{CAL\_\-START\_\-X}}
+\index{CAL\_\-START\_\-X@{CAL\_\-START\_\-X}!3dscan_s.h@{3dscan\_\-s.h}}
+\subsubsection[{CAL\_\-START\_\-X}]{\setlength{\rightskip}{0pt plus 5cm}\#define CAL\_\-START\_\-X~220}}
+\label{3dscan__s_8h_a090f0583fc787def1768ea0d173d9cdc}
+X-\/Startoffset for the bright-\/dark change search \mbox{[}pxs\mbox{]} \hypertarget{3dscan__s_8h_af155718b04f99f42c5d343e92888dbd8}{
+\index{3dscan\_\-s.h@{3dscan\_\-s.h}!CAL\_\-START\_\-Y@{CAL\_\-START\_\-Y}}
+\index{CAL\_\-START\_\-Y@{CAL\_\-START\_\-Y}!3dscan_s.h@{3dscan\_\-s.h}}
+\subsubsection[{CAL\_\-START\_\-Y}]{\setlength{\rightskip}{0pt plus 5cm}\#define CAL\_\-START\_\-Y~220}}
+\label{3dscan__s_8h_af155718b04f99f42c5d343e92888dbd8}
+Y-\/Startoffset for the bright-\/dark change search \mbox{[}pxs\mbox{]} \hypertarget{3dscan__s_8h_ad6c9d01253bb8b019f344e72e027e023}{
+\index{3dscan\_\-s.h@{3dscan\_\-s.h}!DISPLAY\_\-USAGE\_\-AND\_\-EXIT@{DISPLAY\_\-USAGE\_\-AND\_\-EXIT}}
+\index{DISPLAY\_\-USAGE\_\-AND\_\-EXIT@{DISPLAY\_\-USAGE\_\-AND\_\-EXIT}!3dscan_s.h@{3dscan\_\-s.h}}
+\subsubsection[{DISPLAY\_\-USAGE\_\-AND\_\-EXIT}]{\setlength{\rightskip}{0pt plus 5cm}\#define DISPLAY\_\-USAGE\_\-AND\_\-EXIT}}
+\label{3dscan__s_8h_ad6c9d01253bb8b019f344e72e027e023}
+{\bfseries Value:}
+\begin{DoxyCode}
+printf("3dscan_s [Mode] [...]\n \       Mode can be:\n\         1 ->\t Display im
+      age on extern monitor\n \               2 ->\t Take a picture of all cameras\n \                3
+       ->\t Record Image sequence\n \ \n"); \
+        exit(0)
+\end{DoxyCode}
+
+
+\subsection{Function Documentation}
+\hypertarget{3dscan__s_8h_adf976c63dff735f5a8ab812cd6571249}{
+\index{3dscan\_\-s.h@{3dscan\_\-s.h}!basic\_\-sensor\_\-setup@{basic\_\-sensor\_\-setup}}
+\index{basic\_\-sensor\_\-setup@{basic\_\-sensor\_\-setup}!3dscan_s.h@{3dscan\_\-s.h}}
+\subsubsection[{basic\_\-sensor\_\-setup}]{\setlength{\rightskip}{0pt plus 5cm}int basic\_\-sensor\_\-setup (
+\begin{DoxyParamCaption}
+\item[{int}]{ ui\_\-snr, }
+\item[{int}]{ hei, }
+\item[{int}]{ wid, }
+\item[{int}]{ exp, }
+\item[{int}]{ gain}
+\end{DoxyParamCaption}
+)}}
+\label{3dscan__s_8h_adf976c63dff735f5a8ab812cd6571249}
+
+
+Does a basic setup for a sensor. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em ui\_\-snr}]Confgure sensor number; set to ALL\_\-SENSORS if you want to configure all \item[{\em hei}]Imgae heigt \item[{\em wid}]Image width \item[{\em exp}]Exposure \item[{\em gain}]Analog Gain \end{DoxyParams}
+\hypertarget{3dscan__s_8h_a56ef422b226d6682c73a30851e3b5cf1}{
+\index{3dscan\_\-s.h@{3dscan\_\-s.h}!display\_\-vga@{display\_\-vga}}
+\index{display\_\-vga@{display\_\-vga}!3dscan_s.h@{3dscan\_\-s.h}}
+\subsubsection[{display\_\-vga}]{\setlength{\rightskip}{0pt plus 5cm}void display\_\-vga (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{ \_\-name}
+\end{DoxyParamCaption}
+)}}
+\label{3dscan__s_8h_a56ef422b226d6682c73a30851e3b5cf1}
+
+
+Displays a cameraimage on the screen. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em $\ast$\_\-name}]Name of the Thread\end{DoxyParams}
+Use as thread to display the camdata \hypertarget{3dscan__s_8h_a7fb48445adaa2fa12bdc2820970c8703}{
+\index{3dscan\_\-s.h@{3dscan\_\-s.h}!save\_\-imges\_\-2\_\-nfs@{save\_\-imges\_\-2\_\-nfs}}
+\index{save\_\-imges\_\-2\_\-nfs@{save\_\-imges\_\-2\_\-nfs}!3dscan_s.h@{3dscan\_\-s.h}}
+\subsubsection[{save\_\-imges\_\-2\_\-nfs}]{\setlength{\rightskip}{0pt plus 5cm}int save\_\-imges\_\-2\_\-nfs (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{ path, }
+\item[{int}]{ hei, }
+\item[{int}]{ wid}
+\end{DoxyParamCaption}
+)}}
+\label{3dscan__s_8h_a7fb48445adaa2fa12bdc2820970c8703}
+
+
+Aquires an image from every can; saves them to a given path. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em $\ast$path}]Path where images are saved to \item[{\em hei}]Heights of the image \item[{\em wid}]Width of the image \end{DoxyParams}

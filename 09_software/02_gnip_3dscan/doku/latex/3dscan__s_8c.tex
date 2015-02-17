@@ -1,0 +1,144 @@
+\hypertarget{3dscan__s_8c}{
+\section{server/3dscan\_\-s.c File Reference}
+\label{3dscan__s_8c}\index{server/3dscan\_\-s.c@{server/3dscan\_\-s.c}}
+}
+
+
+Server for MQ II serving for 3D-\/ Scan Thesis.  
+
+
+{\ttfamily \#include $<$stdlib.h$>$}\par
+{\ttfamily \#include $<$stdio.h$>$}\par
+{\ttfamily \#include $<$string.h$>$}\par
+{\ttfamily \#include $<$unistd.h$>$}\par
+{\ttfamily \#include $<$pthread.h$>$}\par
+{\ttfamily \#include $<$errno.h$>$}\par
+{\ttfamily \#include \char`\"{}/home/christoph/src/MiniQuadrix\_\-II/software/include/mq2\_\-api.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}/home/christoph/src/MiniQuadrix\_\-II/software/include/debug.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}../include/3ds.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}3dscan\_\-s.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}../include/bmp.h\char`\"{}}\par
+{\ttfamily \#include \char`\"{}../include/font.h\char`\"{}}\par
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{3dscan__s_8c_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\item 
+\hypertarget{3dscan__s_8c_acd01f812f872402a12964a89f93ea154}{
+int {\bfseries determine\_\-calibration} (char $\ast$path, int hei, int wid, short lower\_\-tresh, short upper\_\-tresh)}
+\label{3dscan__s_8c_acd01f812f872402a12964a89f93ea154}
+
+\item 
+int \hyperlink{3dscan__s_8c_a7fb48445adaa2fa12bdc2820970c8703}{save\_\-imges\_\-2\_\-nfs} (char $\ast$path, int hei, int wid)
+\begin{DoxyCompactList}\small\item\em Aquires an image from every can; saves them to a given path. \item\end{DoxyCompactList}\item 
+void \hyperlink{3dscan__s_8c_a56ef422b226d6682c73a30851e3b5cf1}{display\_\-vga} (void $\ast$\_\-name)
+\begin{DoxyCompactList}\small\item\em Displays a cameraimage on the screen. \item\end{DoxyCompactList}\item 
+int \hyperlink{3dscan__s_8c_adf976c63dff735f5a8ab812cd6571249}{basic\_\-sensor\_\-setup} (int ui\_\-snr, int hei, int wid, int exp, int gain)
+\begin{DoxyCompactList}\small\item\em Does a basic setup for a sensor. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{3dscan__s_8c_a7a8f9750f719bcd45bc68898af77d83d}{
+unsigned int {\bfseries ui\_\-sensor} = 0}
+\label{3dscan__s_8c_a7a8f9750f719bcd45bc68898af77d83d}
+
+\item 
+\hypertarget{3dscan__s_8c_a586a47356d3449378dd17489ce491f28}{
+unsigned short $\ast$ {\bfseries framebuffer1}}
+\label{3dscan__s_8c_a586a47356d3449378dd17489ce491f28}
+
+\item 
+\hypertarget{3dscan__s_8c_a8946c55004177596e15a5fad01436c6d}{
+unsigned short $\ast$ {\bfseries framebuffer2}}
+\label{3dscan__s_8c_a8946c55004177596e15a5fad01436c6d}
+
+\item 
+\hypertarget{3dscan__s_8c_a1682011f286b6d734d885f00c1cb63fb}{
+pthread\_\-t {\bfseries th\_\-display\_\-vga}}
+\label{3dscan__s_8c_a1682011f286b6d734d885f00c1cb63fb}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Server for MQ II serving for 3D-\/ Scan Thesis. \begin{DoxyAuthor}{Author}
+Christoph Gnip 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+July 20th 2010 
+\end{DoxyDate}
+\begin{DoxyVersion}{Version}
+1.0 This program is part of my Bachelor-\/Thesis. It is a Server for the MiniQuadrix II with the addition of a MiniCluster-\/board, wich was designdd in during work. The Idea is to generate 3D scenedata exploiting only the casted shadows. The generation of the shadows is one of the tasks of the MiniCluster-\/ Borad. Therefor it holds 4 LED-\/arrays located on the boards edges. It is also possible to setup usefull parameters, wich have an influence on the aquired image. 
+\end{DoxyVersion}
+
+
+\subsection{Function Documentation}
+\hypertarget{3dscan__s_8c_adf976c63dff735f5a8ab812cd6571249}{
+\index{3dscan\_\-s.c@{3dscan\_\-s.c}!basic\_\-sensor\_\-setup@{basic\_\-sensor\_\-setup}}
+\index{basic\_\-sensor\_\-setup@{basic\_\-sensor\_\-setup}!3dscan_s.c@{3dscan\_\-s.c}}
+\subsubsection[{basic\_\-sensor\_\-setup}]{\setlength{\rightskip}{0pt plus 5cm}int basic\_\-sensor\_\-setup (
+\begin{DoxyParamCaption}
+\item[{int}]{ ui\_\-snr, }
+\item[{int}]{ hei, }
+\item[{int}]{ wid, }
+\item[{int}]{ exp, }
+\item[{int}]{ gain}
+\end{DoxyParamCaption}
+)}}
+\label{3dscan__s_8c_adf976c63dff735f5a8ab812cd6571249}
+
+
+Does a basic setup for a sensor. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em ui\_\-snr}]Confgure sensor number; set to ALL\_\-SENSORS if you want to configure all \item[{\em hei}]Imgae heigt \item[{\em wid}]Image width \item[{\em exp}]Exposure \item[{\em gain}]Analog Gain \end{DoxyParams}
+\hypertarget{3dscan__s_8c_a56ef422b226d6682c73a30851e3b5cf1}{
+\index{3dscan\_\-s.c@{3dscan\_\-s.c}!display\_\-vga@{display\_\-vga}}
+\index{display\_\-vga@{display\_\-vga}!3dscan_s.c@{3dscan\_\-s.c}}
+\subsubsection[{display\_\-vga}]{\setlength{\rightskip}{0pt plus 5cm}void display\_\-vga (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{ \_\-name}
+\end{DoxyParamCaption}
+)}}
+\label{3dscan__s_8c_a56ef422b226d6682c73a30851e3b5cf1}
+
+
+Displays a cameraimage on the screen. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em $\ast$\_\-name}]Name of the Thread\end{DoxyParams}
+Use as thread to display the camdata \hypertarget{3dscan__s_8c_a3c04138a5bfe5d72780bb7e82a18e627}{
+\index{3dscan\_\-s.c@{3dscan\_\-s.c}!main@{main}}
+\index{main@{main}!3dscan_s.c@{3dscan\_\-s.c}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int main (
+\begin{DoxyParamCaption}
+\item[{int}]{ argc, }
+\item[{char $\ast$$\ast$}]{ argv}
+\end{DoxyParamCaption}
+)}}
+\label{3dscan__s_8c_a3c04138a5bfe5d72780bb7e82a18e627}
+
+\begin{DoxyParams}{Parameters}
+\item[{\em argc}]Argumentcount \item[{\em $\ast$$\ast$argv}]Given this is a commandline tool, it uses some parameters. Known are 3 main parameters \begin{DoxyItemize}
+\item 1 Live modus \item 2 Aquire 4 images (basicly for calibration) \item 3 Aquire sequence; 4x4 Pictures save under a path \end{DoxyItemize}
+\end{DoxyParams}
+\hypertarget{3dscan__s_8c_a7fb48445adaa2fa12bdc2820970c8703}{
+\index{3dscan\_\-s.c@{3dscan\_\-s.c}!save\_\-imges\_\-2\_\-nfs@{save\_\-imges\_\-2\_\-nfs}}
+\index{save\_\-imges\_\-2\_\-nfs@{save\_\-imges\_\-2\_\-nfs}!3dscan_s.c@{3dscan\_\-s.c}}
+\subsubsection[{save\_\-imges\_\-2\_\-nfs}]{\setlength{\rightskip}{0pt plus 5cm}int save\_\-imges\_\-2\_\-nfs (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{ path, }
+\item[{int}]{ hei, }
+\item[{int}]{ wid}
+\end{DoxyParamCaption}
+)}}
+\label{3dscan__s_8c_a7fb48445adaa2fa12bdc2820970c8703}
+
+
+Aquires an image from every can; saves them to a given path. 
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em $\ast$path}]Path where images are saved to \item[{\em hei}]Heights of the image \item[{\em wid}]Width of the image \end{DoxyParams}

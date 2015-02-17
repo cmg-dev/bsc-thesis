@@ -1,0 +1,280 @@
+/**
+	@file video.c
+	@author Christoph Gnip
+	@date July 19th 2010
+	@version 1.0
+	@brief Little tool for basic camera setup
+
+*/
+#define	DPRINT
+
+#define		VERSION				"1.0"
+
+//Includes
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <errno.h>
+#include "/home/christoph/src/MiniQuadrix_II/software/include/mq2_api.h"
+#include "/home/christoph/src/MiniQuadrix_II/software/include/debug.h"
+#include "../include/3ds.h"
+
+int setup_sensors( int ui_snr );
+void display_vga( void *_name );
+
+//Hardwarebeschreibungen verschiedener Blöcke. Nicht alle müssen vorhanden sein, sollten aber vorher declariert werden
+PB_SENSOR_CONTROL	*t_pb_sensor_control = NULL;		//SENSOR_CONTROL Hardwaredesc
+PB_VGA_FIFO		*t_pb_vga_fifo = NULL;
+PB_DATAPLEXER		*t_pb_dataplexer = NULL;
+PB_LEDA			*t_pb_leda = NULL;
+MQ2_MODULE_DESC *t_mq2_module_desc; //MQ2 Modul-Beschreibungsstruktur
+unsigned short *framebuffer1; //Framebuffer1 zur Anzeige von Bilddaten
+unsigned short *framebuffer2; //Framebuffer1 zur Anzeige von Bilddaten
+
+pthread_mutex_t vga_mutex;
+pthread_cond_t vga_cond;
+pthread_t th_display_vga;
+
+int main(int argc, char **argv)
+{
+
+	unsigned int ui_sensor;
+	unsigned int ui_has_leda;
+	int i_errorcounter;
+	int i_ioresult;
+	unsigned char c;
+	//Übergebenen Parameter überprüfen
+	if (argc != 2)
+	{
+		printf("Anzahl Parameter falsch!\n");
+		printf("Aufruf: video [Sensor-Nr]\n");
+		printf("Beispiel: video 1");
+		printf("Exit...\n");
+		exit(-1);
+	}
+
+	ui_sensor = atoi(argv[1]);
+
+	if ((ui_sensor < 1) || (ui_sensor > 4))
+	{
+		printf("Sensornummer falsch! Mögliche Werte sind 1 bis 4!\n");
+		printf("Exit...\n");
+		exit(-1);
+	}
+
+	t_mq2_module_desc = mq2api_make_module_description(); //Modulbeschreibung über die API erzeugen und zurückgeben
+
+	if (t_mq2_module_desc == NULL)
+	{
+		printf("Fehler beim abrufen der Hardwareinformationen...\n");
+		printf("Exit...\n");
+		exit(-1);
+	}
+
+	//Abfrage ob geforderter Sensor überhaupt existiert
+	if (t_mq2_module_desc->sensor_info[ui_sensor-1] == NULL)
+	{
+		printf("Sensor %d ist nicht angeschlossen!\n",ui_sensor);
+		printf("Exit...\n");
+		exit(-1);
+	}  
+
+	pthread_mutex_init( &vga_mutex, NULL );
+	pthread_cond_init( &vga_cond, NULL );
+
+	printf("Starte Videobild für Sensor: %d  Programmabbruch mit STRG+C\n",ui_sensor);
+	//PIA-Chain für angegebenen Sensor einstellen
+	//Datenpfad soll sein:
+	//Sensor --> VGA-FIFO --> VGA-Monitor
+
+	//Benötigte Hardwareblöcke finden
+	mq2api_mappb(t_mq2_module_desc, (void *) &t_pb_sensor_control, PB_IDENT_SENSOR_CONTROL, 0);
+	mq2api_mappb(t_mq2_module_desc, (void *) &t_pb_dataplexer, PB_IDENT_DATAPLEXER, (int)ui_sensor);
+	mq2api_mappb(t_mq2_module_desc, (void *) &t_pb_vga_fifo, PB_IDENT_VGA_FIFO, 0);
+	//LEDA-Block mappen (Nur in SILVER-Version)
+	i_ioresult = mq2api_mappb(t_mq2_module_desc, (void *) &t_pb_leda, PB_IDENT_LEDA, 0);
+	ui_has_leda = TRUE;
+	if (i_ioresult != RET_SUCCESS)
+	{
+		printf("Kann LEDA-Block nicht mappen! LED-Ansteuerung wird nicht genutzt...\n");
+		ui_has_leda = FALSE;
+	}
+
+	//Dataplexer einstellen
+	t_pb_dataplexer->i_dapl_mon_mux = SENSOR_DATA; //Datenstrom geht vom Sensor direkt zum Monitor Port
+	if (ui_sensor == 1) mq2api_setfeature(t_mq2_module_desc,DAPL1,ALL_FEATURES);
+	if (ui_sensor == 2) mq2api_setfeature(t_mq2_module_desc,DAPL2,ALL_FEATURES);
+	if (ui_sensor == 3) mq2api_setfeature(t_mq2_module_desc,DAPL3,ALL_FEATURES);
+	if (ui_sensor == 4) mq2api_setfeature(t_mq2_module_desc,DAPL4,ALL_FEATURES);
+
+	//Video-Fifo einstellen
+	//Erst Initialisieren
+	mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,INITIALIZE_VGA);
+	//Zwei Framebufferbereiche allokieren
+	framebuffer1 = (unsigned short *)malloc(640*480*2);
+	framebuffer2 = (unsigned short *)malloc(640*480*2);
+	//und zuweisen
+
+
+	setup_sensors( ALL_SENSORS );
+
+	if (ui_has_leda == TRUE)
+	{
+		mq2api_setfeature(t_mq2_module_desc,LEDA,LEDA_RESET); //Reset der Hardware
+		t_pb_leda->ui_config = LEDA_ENABLE | LEDA_EN_EXT_MOD | LEDA_LED_GREEN; //Block enablen, Trigger Mode, grüne Steckerled einschalten, orange Steckerled ausschalten
+		t_pb_leda->ui_data = 50; //LedStrom = (ui_data * 2 mA)
+		t_pb_leda->ui_led_en = LEDA_EN_LED8_BIT /*| LEDA_EN_LED7_BIT | LEDA_EN_LED6_BIT | LEDA_EN_LED5_BIT*/; //LED 1 enablen (ver-UNDet mit MOD-Kommando)
+		t_pb_leda->ui_pd = LEDA_NORMAL_OPERATION;
+		t_pb_leda->ui_led_on_time = 25000 * 300; //25000 ticks = 1ms lang die leds nach trigger einschalten
+		printf("LEDA-Block schaltet LEDs fuer %d usec ein!\n",(unsigned int)((40.0E-9 * (float)t_pb_leda->ui_led_on_time) * 1000.0));
+		mq2api_setfeature(t_mq2_module_desc,LEDA,ALL_FEATURES); //Aktuelle Einstellungen zur Hardware schreiben
+	}
+
+//Endlosschleife Bildaufnahme und darstellung auf VGA Monitor mit zwei Framebuffern (Doublebuffering)
+	i_errorcounter = 0;
+
+	while(1){
+		t_pb_vga_fifo->pus_inputbuffer = framebuffer1;
+		t_pb_vga_fifo->pus_vgasource = framebuffer1;
+		mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,CHANGE_VGASOURCE);
+		mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,CHANGE_INPUTBUFFER);
+		mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,START_VGA);
+		mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,RELOAD_DMA);
+		t_pb_vga_fifo->ui_inputchannel = ui_sensor; //Video Fifo eingang auf Sensor setzen
+		mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,CHANGE_CHANNEL);
+
+		exit_if( pthread_create( &th_display_vga,
+			NULL,
+		      ( void * )&display_vga,
+			( void * ) "DISPLAY VGA" ) != 0 );
+
+		printf("Press any key to walk through cam\n");
+		c = getchar( );
+		if( ui_sensor < 4 )
+			ui_sensor++; //Video Fifo eingang auf Sensor setzen
+		else
+			ui_sensor = 1;
+		printf("New cam is: %i\n", ui_sensor );
+		
+		pthread_cancel( th_display_vga );
+
+	}
+	
+  
+
+//Hier komme ich nie hin!
+mq2api_free_module_description(t_mq2_module_desc); //Alles wieder freigeben
+//Fertig
+printf("Exiting...\n");
+
+
+return(0);
+}
+
+void display_vga( void *_name )
+{
+	int i_errorcounter, i_result;
+		while(1)
+	{
+		t_pb_vga_fifo->pus_inputbuffer = framebuffer2;
+		//Ein Bild aufnehmen und in Framebuffer 2 ablegen
+		mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,RELOAD_DMA); //DMA aktivieren
+
+		mq2api_setfeature(t_mq2_module_desc,SENSOR_CONTROL, EXPOSURE); //Bild aufnehmen
+		i_result = mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,WAIT_FOR_DMA_READY); //Warte bis Bildaufnahme fertig ist
+		if (i_result == RET_DMA_TIMEOUT) //Wenn Fehler
+		{
+			printf("DMA Timeout bei Framebuffer2. Sensor liefert keine oder zu wenig Daten!\n");
+			i_errorcounter++;
+			if (i_errorcounter > 5) break;
+		}
+		//VGA auf den nun aktuellen Framebuffer2 setzen
+		t_pb_vga_fifo->pus_vgasource = t_pb_vga_fifo->pus_inputbuffer;
+		mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,CHANGE_VGASOURCE);
+
+		//Nun in den Framebuffer1 ein neues Bild ablegen
+		t_pb_vga_fifo->pus_inputbuffer = framebuffer1;
+		mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,RELOAD_DMA); //DMA aktivieren
+
+		mq2api_setfeature(t_mq2_module_desc,SENSOR_CONTROL, EXPOSURE); //Bild aufnehmen
+		i_result = mq2api_setfeature(t_mq2_module_desc,VGA_FIFO,WAIT_FOR_DMA_READY); //Warte bis Bildaufnahme fertig ist
+		if (i_result == RET_DMA_TIMEOUT) //Wenn Fehler
+		{
+			printf("DMA Timeout bei Framebuffer1. Sensor liefert keine oder zu wenig Daten!\n");
+			i_errorcounter++;
+			if (i_errorcounter > 5) break;
+		}
+		//VGA auf den nun aktuellen Framebuffer1 setzen
+		t_pb_vga_fifo->pus_vgasource = t_pb_vga_fifo->pus_inputbuffer;
+		mq2api_setfeature( t_mq2_module_desc,VGA_FIFO,CHANGE_VGASOURCE );
+
+	}
+}
+
+int setup_sensors( int ui_snr )
+{
+	if( ui_snr != ALL_SENSORS ) {
+		if (ui_snr == 1) t_pb_sensor_control->i_sensor_1_exposureenable = TRUE;
+		if (ui_snr == 2) t_pb_sensor_control->i_sensor_2_exposureenable = TRUE;
+		if (ui_snr == 3) t_pb_sensor_control->i_sensor_3_exposureenable = TRUE;
+		if (ui_snr == 4) t_pb_sensor_control->i_sensor_4_exposureenable = TRUE;
+		mq2api_setfeature(t_mq2_module_desc,SENSOR_CONTROL,ALL_FEATURES);
+
+		t_mq2_module_desc->sensor_info[ui_snr-1]->us_image_width = 640;
+		t_mq2_module_desc->sensor_info[ui_snr-1]->us_image_height = 480;
+		t_mq2_module_desc->sensor_info[ui_snr-1]->ui_exposure = 100;
+		t_mq2_module_desc->sensor_info[ui_snr-1]->ui_gain = 2;
+		t_mq2_module_desc->sensor_info[ui_snr-1]->ui_aec_agc = FALSE;
+
+		if (ui_snr == 1) mq2api_setfeature(t_mq2_module_desc,SENSOR1,ALL_FEATURES);
+		if (ui_snr == 2) mq2api_setfeature(t_mq2_module_desc,SENSOR2,ALL_FEATURES);
+		if (ui_snr == 3) mq2api_setfeature(t_mq2_module_desc,SENSOR3,ALL_FEATURES);
+		if (ui_snr == 4) mq2api_setfeature(t_mq2_module_desc,SENSOR4,ALL_FEATURES);
+
+	} else {
+		t_pb_sensor_control->i_sensor_1_exposureenable = TRUE;
+		t_pb_sensor_control->i_sensor_2_exposureenable = TRUE;
+		t_pb_sensor_control->i_sensor_3_exposureenable = TRUE;
+		t_pb_sensor_control->i_sensor_4_exposureenable = TRUE;
+		mq2api_setfeature(t_mq2_module_desc,SENSOR_CONTROL,ALL_FEATURES);
+
+		t_mq2_module_desc->sensor_info[0]->us_image_width = 640;
+		t_mq2_module_desc->sensor_info[0]->us_image_height = 480;
+		t_mq2_module_desc->sensor_info[0]->ui_exposure = 100;
+		t_mq2_module_desc->sensor_info[0]->ui_gain = 2;
+		t_mq2_module_desc->sensor_info[0]->ui_aec_agc = FALSE;
+
+		t_mq2_module_desc->sensor_info[3]->us_image_width =
+		t_mq2_module_desc->sensor_info[2]->us_image_width =
+		t_mq2_module_desc->sensor_info[1]->us_image_width =
+		t_mq2_module_desc->sensor_info[0]->us_image_width;
+
+		t_mq2_module_desc->sensor_info[3]->us_image_height =
+		t_mq2_module_desc->sensor_info[2]->us_image_height =
+		t_mq2_module_desc->sensor_info[1]->us_image_height =
+		t_mq2_module_desc->sensor_info[0]->us_image_height;
+
+		t_mq2_module_desc->sensor_info[3]->ui_exposure =
+		t_mq2_module_desc->sensor_info[2]->ui_exposure =
+		t_mq2_module_desc->sensor_info[1]->ui_exposure =
+		t_mq2_module_desc->sensor_info[0]->ui_exposure;
+
+		t_mq2_module_desc->sensor_info[3]->ui_gain =
+		t_mq2_module_desc->sensor_info[2]->ui_gain =
+		t_mq2_module_desc->sensor_info[1]->ui_gain =
+		t_mq2_module_desc->sensor_info[0]->ui_gain;
+
+		t_mq2_module_desc->sensor_info[3]->ui_aec_agc =
+		t_mq2_module_desc->sensor_info[2]->ui_aec_agc =
+		t_mq2_module_desc->sensor_info[1]->ui_aec_agc =
+		t_mq2_module_desc->sensor_info[0]->ui_aec_agc;
+
+		mq2api_setfeature(t_mq2_module_desc,SENSOR1,ALL_FEATURES);
+		mq2api_setfeature(t_mq2_module_desc,SENSOR2,ALL_FEATURES);
+		mq2api_setfeature(t_mq2_module_desc,SENSOR3,ALL_FEATURES);
+		mq2api_setfeature(t_mq2_module_desc,SENSOR4,ALL_FEATURES);
+	}
+	return SUCCESS;
+}

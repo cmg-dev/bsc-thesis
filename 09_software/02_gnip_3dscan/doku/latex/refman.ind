@@ -1,0 +1,64 @@
+\begin{theindex}
+
+  \item {3dscan\_\discretionary {-}{}{}s.c}
+    \subitem {basic\_\discretionary {-}{}{}sensor\_\discretionary {-}{}{}setup}, 
+		\hyperpage{8}
+    \subitem {display\_\discretionary {-}{}{}vga}, \hyperpage{8}
+    \subitem {main}, \hyperpage{8}
+    \subitem {save\_\discretionary {-}{}{}imges\_\discretionary {-}{}{}2\_\discretionary {-}{}{}nfs}, 
+		\hyperpage{9}
+  \item {3dscan\_\discretionary {-}{}{}s.h}
+    \subitem {basic\_\discretionary {-}{}{}sensor\_\discretionary {-}{}{}setup}, 
+		\hyperpage{11}
+    \subitem {CAL\_\discretionary {-}{}{}SEARCHLEN}, \hyperpage{10}
+    \subitem {CAL\_\discretionary {-}{}{}START\_\discretionary {-}{}{}X}, 
+		\hyperpage{10}
+    \subitem {CAL\_\discretionary {-}{}{}START\_\discretionary {-}{}{}Y}, 
+		\hyperpage{10}
+    \subitem {DISPLAY\_\discretionary {-}{}{}USAGE\_\discretionary {-}{}{}AND\_\discretionary {-}{}{}EXIT}, 
+		\hyperpage{10}
+    \subitem {display\_\discretionary {-}{}{}vga}, \hyperpage{11}
+    \subitem {save\_\discretionary {-}{}{}imges\_\discretionary {-}{}{}2\_\discretionary {-}{}{}nfs}, 
+		\hyperpage{11}
+
+  \indexspace
+
+  \item {basic\_\discretionary {-}{}{}sensor\_\discretionary {-}{}{}setup}
+    \subitem {3dscan\_\discretionary {-}{}{}s.c}, \hyperpage{8}
+    \subitem {3dscan\_\discretionary {-}{}{}s.h}, \hyperpage{11}
+
+  \indexspace
+
+  \item {CAL\_\discretionary {-}{}{}SEARCHLEN}
+    \subitem {3dscan\_\discretionary {-}{}{}s.h}, \hyperpage{10}
+  \item {CAL\_\discretionary {-}{}{}START\_\discretionary {-}{}{}X}
+    \subitem {3dscan\_\discretionary {-}{}{}s.h}, \hyperpage{10}
+  \item {CAL\_\discretionary {-}{}{}START\_\discretionary {-}{}{}Y}
+    \subitem {3dscan\_\discretionary {-}{}{}s.h}, \hyperpage{10}
+
+  \indexspace
+
+  \item {DISPLAY\_\discretionary {-}{}{}USAGE\_\discretionary {-}{}{}AND\_\discretionary {-}{}{}EXIT}
+    \subitem {3dscan\_\discretionary {-}{}{}s.h}, \hyperpage{10}
+  \item {display\_\discretionary {-}{}{}vga}
+    \subitem {3dscan\_\discretionary {-}{}{}s.c}, \hyperpage{8}
+    \subitem {3dscan\_\discretionary {-}{}{}s.h}, \hyperpage{11}
+
+  \indexspace
+
+  \item {main}
+    \subitem {3dscan\_\discretionary {-}{}{}s.c}, \hyperpage{8}
+
+  \indexspace
+
+  \item {offset}, \hyperpage{5}
+
+  \indexspace
+
+  \item {save\_\discretionary {-}{}{}imges\_\discretionary {-}{}{}2\_\discretionary {-}{}{}nfs}
+    \subitem {3dscan\_\discretionary {-}{}{}s.c}, \hyperpage{9}
+    \subitem {3dscan\_\discretionary {-}{}{}s.h}, \hyperpage{11}
+  \item {server/3dscan\_\discretionary {-}{}{}s.c}, \hyperpage{7}
+  \item {server/3dscan\_\discretionary {-}{}{}s.h}, \hyperpage{9}
+
+\end{theindex}
