@@ -26,3 +26,6 @@
 *.exe
 *.out
 *.app
+
+cm_karloserver
+*.gdb
